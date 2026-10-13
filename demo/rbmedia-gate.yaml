@@ -1,0 +1,90 @@
+title: "Catalogue integrity gate — how the job description gets answered"
+url: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
+profile: rbm
+# Voice: run with --config config-liam.yaml (Kokoro am_liam)
+#
+# Eight scenes, one per line of the job description. Scenes 1-5 and 7 are local
+# files and need no session; scene 6 needs the `rbm` profile (Linear) and scene 8
+# uses the same profile for GitHub.
+scenes:
+  - say: "This is a sandbox I built in a morning to work through the two programs in the job description: a data platform, and a Shopify storefront launch. The catalogue is synthetic and the imprints are invented — I didn't want to put a real brand on my sandbox. What's real is the mechanism."
+    caption: "A sandbox, built in a morning"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
+      - wait: 3000
+
+  - say: "The verdict is no-go, and the five numbers say why. Four of eighteen readiness checks are met, twelve blocking checks are not, seven have never been answered, and there are four blocking problems in the catalogue worth about twenty-four thousand dollars a month in exposure."
+    caption: "NO-GO · 4 of 18 ready · $23,815/mo at risk"
+    actions:
+      - wait: 3500
+
+  - say: "Selling audiobooks direct isn't a storefront problem. Audio rights are licensed per territory and per window, so a title that's buyable where the licence doesn't reach isn't a user-experience bug — it's a breach with the rights holder. Six rules check for that. Saltmarsh is on sale in the United Kingdom on a licence that ended in June. Winter Ledger is live three weeks before its window opens. Driftwood Hour is buyable with no audio file attached, so the order can't be fulfilled."
+    caption: "Six rules · rights, windows, price floors, duplicates, deliverables"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#findings"
+      - wait: 4000
+      - scroll: { by: 320 }
+      - wait: 3500
+
+  - say: "Revenue at risk is arithmetic, not a guess. Exposure for the compliance rules, margin given away for pricing, unrealised revenue where a licence is open and nothing is listed. The list is ranked blocking first, then by money, because that's the order an operations team should work it."
+    caption: "Ranked blocking first, then by money"
+    actions:
+      - wait: 3000
+
+  - say: "Launch readiness is the job description's own list — infrastructure, security, load, observability, checkout performance — as a table rather than a document. Two decisions are worth defending. An unanswered check counts as not ready, because scoring it as a pass is how a launch date slips quietly. And the rows marked as gates aren't human judgements: they resolve from the catalogue findings on every run, so the two halves stay reconciled instead of becoming two reports nobody compares."
+    caption: "Readiness as data · unanswered counts as not ready"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#readiness"
+      - wait: 4000
+      - scroll: { by: 420 }
+      - wait: 3500
+
+  - say: "And this is not observability. There's no telemetry here — no metrics, no traces, no error budget, nobody holding a pager. It's a monitor over business invariants. Most teams instrument the infrastructure and leave the business rules uninstrumented, which is how a system fails while every dashboard stays green. What observability would actually need is named here: checkout p ninety-five by territory, entitlement delivery failures, order-to-delivery success, an error budget with a pager owner, and an alert on the silent path. None of it is built. Saying what's missing is worth more than claiming the ground."
+    caption: "Not observability — a monitor over business invariants"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#notobs"
+      - wait: 4500
+      - scroll: { by: 380 }
+      - wait: 4000
+
+  - say: "Stakeholder demands arrive as email. A human reads the prose and fills in a small structured form — that's judgement, and judgement doesn't belong inside a deterministic rule. The gate then decides, and the gate is the part with tests. It asks four questions in order. Is this already tracked? Does the claim survive the source? Which statement of work line does it fall under? And what's the acceptance criterion?"
+    caption: "Intake: four questions, in order"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#intake"
+      - wait: 4000
+
+  - say: "Three demands, three different answers. The complaint about Hollow Season doesn't survive the rights table, so the reply carries the evidence instead of an opinion. The request for a listener app falls on a line with no approved hours, so it's a change request on the day it arrives, not a task somebody forgot. And the Saltmarsh complaint is already on the board, so it gets linked rather than opened twice. The third question is the one that earns the role."
+    caption: "Not reproducible · change request · already tracked"
+    actions:
+      - scroll: { by: 420 }
+      - wait: 4000
+      - scroll: { by: 420 }
+      - wait: 3500
+
+  - say: "Every finding becomes an issue somebody owns. Labelled by rule, labelled by the vendor the statement of work puts it on, priority from severity. The sync is idempotent — the finding's key sits in the title, so running this every morning updates the board instead of flooding it. There's no state file: the Linear issue is the state. Its creation date is when we first saw the problem, and once an issue passes its owner's service level it goes to urgent, picks up a breach label, and gets one comment."
+    caption: "One owned ticket per problem · idempotent · aged against SLA"
+    actions:
+      - goto: "https://linear.app/rbmedia-sandbox/team/RBM/all"
+      - wait: 5000
+      - scroll: { by: 300 }
+      - wait: 3000
+
+  - say: "And the brief goes where the people who can act already are: the verdict, who's holding the launch, the three worst findings, and anything past its service level. Short on purpose — the detail is one click away."
+    caption: "The morning brief in the ops channel"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/demo/slack.html"
+      - wait: 5000
+
+  - say: "Forty tests, and the split they protect is the whole architecture. The rules are pure functions over plain data and run with no network, because everything that can be wrong about the domain lives there. The Shopify, Linear and Slack adapters are thin and fail loudly, because everything that can be broken about a network lives there. One example of why that matters: an early version opened four tickets for a single unopened licence window. There's a regression test named after it."
+    caption: "40 tests · rules pure and offline, adapters thin and loud"
+    actions:
+      - goto: "https://github.com/slompo-bizdev/rbmedia-sandbox"
+      - wait: 4500
+      - scroll: { by: 700 }
+      - wait: 4000
+
+  - say: "That's the sandbox. It isn't anyone's system and it doesn't pretend to be. It's how I'd instrument the launch — find the thing that fails without anyone noticing, give it an owner and a clock, and put it where the team already works."
+    caption: "Victor Slompo · VS Solutions"
+    actions:
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
+      - wait: 3500

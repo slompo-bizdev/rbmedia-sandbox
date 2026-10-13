@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The morning brief in the ops channel</title>
+<style>
+  :root{--bg:#0E1113;--card:#15191C;--line:#242A2F;--ink:#EDF1F3;--mute:#6E7A83;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--mute);font-family:var(--sans);
+  display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 28px}
+  .wrap{max-width:1000px;width:100%}
+  h1{font-size:13px;font-weight:600;color:var(--ink);text-transform:uppercase;
+  letter-spacing:.1em;font-family:var(--mono);margin:0 0 4px}
+  p.sub{font-family:var(--mono);font-size:12px;color:var(--mute);margin:0 0 18px}
+  figure{margin:0;background:var(--card);border:1px solid var(--line);padding:10px}
+  img{display:block;width:100%;height:auto}
+  .missing{font-family:var(--mono);font-size:13px;line-height:1.8;color:var(--mute);
+  background:var(--card);border:1px dashed var(--line);padding:28px}
+  .missing b{color:var(--ink);font-weight:600}
+  code{color:#7DD3FC}
+</style>
+<script>
+  // If the screenshot is not in place, say so rather than showing a broken image
+  // in the middle of a recording.
+  window.addEventListener('DOMContentLoaded', function () {
+    var img = document.getElementById('shot');
+    img.addEventListener('error', function () {
+      document.getElementById('fig').style.display = 'none';
+      document.getElementById('miss').style.display = 'block';
+    });
+  });
+</script>
+</head><body><div class="wrap">
+
+  <h1>#truelogic-ops</h1>
+  <p class="sub">Posted by <code>gate.cli digest</code> — verdict, who is holding the launch, the three worst findings, anything past SLA</p>
+
+  <figure id="fig"><img id="shot" src="slack.png" alt="The gate's brief posted into the ops channel"></figure>
+
+  <div class="missing" id="miss" style="display:none">
+    <b>slack.png is not here yet.</b><br>
+    Run <code>python3 -m gate.cli digest --team RBM</code>, screenshot the
+    <code>#truelogic-ops</code> channel, and save it as
+    <code>demo/slack.png</code> next to this file.
+  </div>
+
+</div></body></html>
