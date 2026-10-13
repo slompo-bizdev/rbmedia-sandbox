@@ -166,6 +166,25 @@ catalogue can live in the same store and neither pollutes the other's report.
 `--unpublish-others` changes product status, nothing more, and the opposite flag
 restores it.
 
+## Two things Shopify taught the design
+
+Both found while seeding the real store, and both left in because they are the
+interesting part.
+
+**Absent is not empty.** The fixture happily carries a title with an empty
+`audio_asset`, which is how rule `R5` gets something to find. Shopify refuses to store
+a metafield with a blank value — *"Value can't be blank"*. So a missing deliverable is
+a **missing metafield**, not an empty one, and the adapter defaults an absent key to
+the empty string. The rule fires either way, but the data model is the platform's, not
+mine.
+
+**A clean report can mean nothing at all.** Products created through the API are not
+published to the Online Store automatically, and every rule skips an unpublished
+listing. The first live run would therefore have read ten products, fired zero rules,
+and printed a green report — no error, no clue. The adapter now says so out loud when
+it finds tagged products and none of them are buyable. A gate that can be silently
+vacuous is worse than no gate.
+
 ## Shopify shape it expects
 
 Metafields in the `custom` namespace: `isbn`, `imprint`, `territories`

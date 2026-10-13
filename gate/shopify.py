@@ -132,6 +132,19 @@ def fetch_catalogue(shop: str | None = None, token: str | None = None) -> list[P
             f"`python3 -m gate.seed` first, or check the token's scopes."
         )
 
+    # A catalogue that exists but is published to no sales channel reads as an
+    # empty report rather than an error: every rule skips an unpublished
+    # listing, so the gate would come back clean and silent. That is the exact
+    # failure mode this project is about, so it gets said out loud.
+    if products and not any(p.published for p in products):
+        print(
+            f"warning: {len(products)} tagged product(s) found and NOT ONE is buyable "
+            f"(ACTIVE and published to a channel). Every rule skips unpublished "
+            f"listings, so this run will report nothing. Products created through "
+            f"the API are not published to the Online Store automatically — publish "
+            f"them, or this clean report means nothing."
+        )
+
     missing = [p.handle for p in products if not p.isbn]
     if missing:
         # Worth saying out loud: a listing with no ISBN is invisible to every
