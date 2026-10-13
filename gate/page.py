@@ -273,7 +273,10 @@ catalogue findings on every run, which is how the two halves stay reconciled.</p
 {_intake_cards(triages)}
 <p class="note">A human fills the structured demand from the prose email; the gate
 decides. A demand with no contracted SOW line is a change request on the day it
-arrives, not a task somebody forgot.</p>
+arrives, not a task somebody forgot. &ldquo;Already tracked&rdquo; is checked against the
+live board, so a stakeholder reporting a known problem lands on the existing ticket
+instead of opening a second one &mdash; run <code>gate.cli page --team RBM</code> for
+that check, or the page cannot know.</p>
 
 </div></body></html>
 """

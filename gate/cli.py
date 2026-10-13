@@ -76,6 +76,8 @@ def main(argv: list[str] | None = None) -> int:
         help="render one self-contained HTML page from this run",
     )
     g.add_argument("--out", default="run.html", help="output path (default run.html)")
+    g.add_argument("--team", help="Linear team key; without it the page cannot tell "
+                                  "which problems are already on the board")
 
     i = sub.add_parser(
         "intake", parents=[common],
@@ -99,9 +101,16 @@ def main(argv: list[str] | None = None) -> int:
         from pathlib import Path as _P
 
         checks = resolve(load_checks(), findings)
+        keys = {}
+        if args.team:
+            from .linear import open_keys
+
+            keys = open_keys(args.team)
         triages = []
         for d in sorted(_P("demands").glob("*.json")) if _P("demands").is_dir() else []:
-            triages.append(triage(Demand.from_json(d), rights, findings, today))
+            triages.append(
+                triage(Demand.from_json(d), rights, findings, today, open_issue_keys=keys)
+            )
         _P(args.out).write_text(render(findings, checks, triages, today), encoding="utf-8")
         print(f"wrote {args.out}")
         return 0
