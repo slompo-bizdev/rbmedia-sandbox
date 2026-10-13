@@ -1,24 +1,35 @@
 title: "Catalogue integrity gate — how the job description gets answered"
-url: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
+url: "https://slompoboutique.myshopify.com/collections/all"
 profile: rbm
 # Voice: run with --config config-liam.yaml (Kokoro am_liam)
 #
-# Eight scenes, one per line of the job description. Scenes 1-5 and 7 are local
-# files and need no session; scene 6 needs the `rbm` profile (Linear) and scene 8
-# uses the same profile for GitHub.
+# Thirteen scenes, mapped to the lines of the job description.
+#
+# Needs the `rbm` profile for Linear and GitHub. The storefront scene needs the
+# dev store's password protection switched OFF (Online Store -> Preferences),
+# because the cookie that gets past it lives in a different profile and a
+# recording only carries one.
 scenes:
-  - say: "This is a sandbox I built in a morning to work through the two programs in the job description: a data platform, and a Shopify storefront launch. The catalogue is synthetic and the imprints are invented — I didn't want to put a real brand on my sandbox. What's real is the mechanism."
-    caption: "A sandbox, built in a morning"
+  - say: "This is a real Shopify store. Ten audiobook titles across three invented imprints, seeded through the Admin API this morning, each one carrying its I S B N, its publishing imprint, the territories it is allowed to sell in, and the audio file that gets delivered after checkout. The catalogue is synthetic and the imprints are made up — I did not want to put a real brand on my sandbox. The store is not."
+    caption: "A real Shopify store, seeded through the Admin API"
+    actions:
+      - goto: "https://slompoboutique.myshopify.com/collections/all"
+      - wait: 4000
+      - scroll: { by: 600 }
+      - wait: 3000
+
+  - say: "Selling audiobooks direct is not a storefront problem, and this is where the two programs in the job description meet. Audio rights are licensed per territory and per window. A title that is buyable where the licence does not reach is not a user-experience bug — it is a breach with the rights holder. So the interesting object is not the shop. It is the gate in front of it."
+    caption: "The interesting object is the gate, not the shop"
     actions:
       - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
-      - wait: 3000
+      - wait: 3500
 
   - say: "The verdict is no-go, and the five numbers say why. Four of eighteen readiness checks are met, twelve blocking checks are not, seven have never been answered, and there are four blocking problems in the catalogue worth about twenty-four thousand dollars a month in exposure."
     caption: "NO-GO · 4 of 18 ready · $23,815/mo at risk"
     actions:
       - wait: 3500
 
-  - say: "Selling audiobooks direct isn't a storefront problem. Audio rights are licensed per territory and per window, so a title that's buyable where the licence doesn't reach isn't a user-experience bug — it's a breach with the rights holder. Six rules check for that. Saltmarsh is on sale in the United Kingdom on a licence that ended in June. Winter Ledger is live three weeks before its window opens. Driftwood Hour is buyable with no audio file attached, so the order can't be fulfilled."
+  - say: "Six rules check for that, reading the live store through the Admin API and reconciling it against the rights table. Saltmarsh is on sale in the United Kingdom on a licence that ended in June. Winter Ledger is live three weeks before its window opens. Driftwood Hour is buyable with no audio file attached, so the order can't be fulfilled."
     caption: "Six rules · rights, windows, price floors, duplicates, deliverables"
     actions:
       - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#findings"
