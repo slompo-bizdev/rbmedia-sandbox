@@ -33,7 +33,7 @@ scenes:
       - scroll: { by: 340 }
       - wait: 3000
 
-  - say: "Launch readiness is the job description\'s own list — infrastructure, security, load, observability, checkout — as a table rather than a document. Two decisions worth defending. An unanswered check counts as not ready, because scoring it as a pass is how a launch date slips quietly. And the rows marked as gates are not human judgements: they resolve from the catalogue findings on every run, so the two halves stay reconciled instead of becoming two reports nobody compares."
+  - say: "Launch readiness is the job description's own list — infrastructure, security, load, observability, checkout — as a table rather than a document. Two decisions worth defending. An unanswered check counts as not ready, because scoring it as a pass is how a launch date slips quietly. And the rows marked as gates are not human judgements: they resolve from the catalogue findings on every run, so the two halves stay reconciled instead of becoming two reports nobody compares."
     caption: "Readiness as data · unanswered counts as not ready"
     actions:
       - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html#readiness"
@@ -57,7 +57,7 @@ scenes:
       - scroll: { by: 500 }
       - wait: 4000
 
-  - say: "Every finding becomes an issue somebody owns, labelled by rule and by the vendor the contract puts it on. The sync is idempotent, so running it each morning updates the board instead of flooding it, and there is no state file — the issue is the state. Past its owner\'s service level it goes to urgent, and the brief says so in the channel where the team already works. That is the whole idea: find what fails without anyone noticing, give it an owner and a clock, and put it where people already are."
+  - say: "Every finding becomes an issue somebody owns, labelled by rule and by the vendor the contract puts it on. The sync is idempotent, so running it each morning updates the board instead of flooding it, and there is no state file — the issue is the state. Past its owner's service level it goes to urgent, and the brief says so in the channel where the team already works. That is the whole idea: find what fails without anyone noticing, give it an owner and a clock, and put it where people already are."
     caption: "One owned ticket per problem · aged against SLA"
     actions:
       - goto: "https://linear.app/rbmedia-sandbox/team/RBM/all"
