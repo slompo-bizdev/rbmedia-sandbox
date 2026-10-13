@@ -199,6 +199,41 @@ pricing, unrealised revenue for an unlisted licence.</p>
 <code>gate</code> in the source table are not human judgements — they resolve from the
 catalogue findings on every run, which is how the two halves stay reconciled.</p>
 
+<h2>What this is not</h2>
+<div class="card">
+  <h3>This is not observability. There is no telemetry here.</h3>
+  <p class="d">Observability is about a system in flight: metrics, logs and traces;
+  being able to ask production a question you did not think of before you shipped;
+  service-level objectives with an error budget and somebody holding the pager. None
+  of that is in this repository, and the readiness board above says so — two of its
+  three <code>OBS-</code> rows are failing or unanswered.</p>
+  <p class="d">What this <em>is</em>: a monitor over <strong>business invariants</strong>,
+  running on a cadence, alerting where the people who can act already work. The
+  distinction matters because it is the common gap. Teams instrument the
+  infrastructure — CPU, latency, error rate — and leave the business rules
+  uninstrumented. That is how a system fails while every dashboard stays green.</p>
+</div>
+<div class="card">
+  <h3>What observability for this launch would actually require</h3>
+  <p class="d">Named here because saying what is missing is more useful than
+  claiming it is done. None of these are built:</p>
+  <ol>
+    <li>Checkout <code>p95</code> and error rate, split by territory — the three
+    highest-volume markets separately, not one global average.</li>
+    <li>Entitlement delivery failure rate: paid but not playable, visible within
+    minutes rather than at the next support ticket.</li>
+    <li>Order-to-delivery success as a single funnel number, so a regression anywhere
+    along it shows up in one place.</li>
+    <li>An error budget on checkout, with a named pager owner — a dashboard nobody is
+    paged from is decoration.</li>
+    <li>An alert on the silent path: today an unfulfillable order would be caught by
+    rule <code>R5</code> before launch, but nothing would catch it after.</li>
+  </ol>
+  <p class="note" style="margin-top:14px">Item 5 is the one worth arguing about. A
+  pre-launch gate and a production alert are the same question asked at two different
+  times, and most projects only ever ask it once.</p>
+</div>
+
 <h2>Stakeholder intake</h2>
 {_intake_cards(triages)}
 <p class="note">A human fills the structured demand from the prose email; the gate

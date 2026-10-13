@@ -154,6 +154,23 @@ A listing counts as buyable when it is `ACTIVE` **and** published to a channel.
 Listings with no `isbn` are invisible to every rule, so the adapter warns about them
 rather than skipping quietly.
 
+## This is not observability
+
+Worth stating plainly, because the word gets stretched. There is no telemetry here —
+no metrics, no traces, no error budget, nobody holding a pager. The readiness board
+says as much: two of its three `OBS-` rows are failing or unanswered.
+
+What this is, is a **monitor over business invariants**, running on a cadence and
+alerting where the people who can act already work. The distinction is the common gap:
+teams instrument the infrastructure and leave the business rules uninstrumented, which
+is how a system fails while every dashboard stays green.
+
+The generated page (`gate.cli page`) carries a section naming what observability for
+this launch would actually require — checkout p95 by territory, entitlement delivery
+failure rate, order-to-delivery success, an error budget with a named pager owner, and
+an alert on the silent path. None of it is built. Saying what is missing is more useful
+than claiming it is done.
+
 ## What is deliberately not here
 
 No load testing — that needs a target and a budget, not a morning. No entitlement or
