@@ -201,6 +201,18 @@ python3 -m gate.cli check                    # fixture
 python3 -m gate.cli check --source shopify   # the store, through the Admin API
 ```
 
+## One thing left wrong on purpose
+
+The storefront renders prices in **DKK** while every figure in this repository is
+**USD**, and the numbers are identical either side. The sandbox lives on a development
+store whose base currency follows its business entity, and whose test payment gateway
+refuses more than one currency — so per-market currency is out, and changing the base
+would have meant filing a national identification number against a business entity.
+That is not a thing to do for a demo.
+
+So the mismatch stays, named here rather than hidden. `data/rights.csv` is the source
+of truth for currency; the store is not.
+
 ## Two things Shopify taught the design
 
 Both found while seeding the real store, and both left in because they are the

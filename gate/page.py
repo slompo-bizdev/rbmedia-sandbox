@@ -192,6 +192,12 @@ def render(
 <p class="note">Ranked blocking first, then by money. Revenue at risk is arithmetic over
 estimated monthly units — exposure for the compliance rules, margin given away for
 pricing, unrealised revenue for an unlisted licence.</p>
+<p class="note">On currency: the sandbox runs on a Shopify development store whose base
+currency is DKK, and whose test payment gateway supports only one currency — so the
+storefront renders <code>kr</code> while every figure here is USD. The prices are
+numerically identical. Changing it would have meant filing a government identification
+number against a business entity, which is not a thing to do for a demo. <strong>The
+rights table is the source of truth for currency, not the store.</strong></p>
 
 <h2 id="readiness">Launch readiness</h2>
 {_readiness_table(checks)}
