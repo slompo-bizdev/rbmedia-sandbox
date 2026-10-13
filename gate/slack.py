@@ -71,6 +71,13 @@ def compose(
     return "\n".join(lines)
 
 
+# The sender name belongs in the payload, not in a field somebody set once in a
+# settings page. Here it is versioned with the code that posts, and a reader can
+# see who the channel will think is talking.
+BOT_NAME = os.environ.get("SLACK_BOT_NAME", "catalogue-gate")
+BOT_EMOJI = os.environ.get("SLACK_BOT_EMOJI", ":vertical_traffic_light:")
+
+
 def post(text: str, webhook: str | None = None) -> None:
     webhook = webhook or os.environ.get("SLACK_WEBHOOK_URL", "")
     if not webhook:
@@ -80,7 +87,14 @@ def post(text: str, webhook: str | None = None) -> None:
         )
     req = urllib.request.Request(
         webhook,
-        data=json.dumps({"text": text, "mrkdwn": True}).encode(),
+        data=json.dumps(
+            {
+                "text": text,
+                "mrkdwn": True,
+                "username": BOT_NAME,
+                "icon_emoji": BOT_EMOJI,
+            }
+        ).encode(),
         headers={"Content-Type": "application/json"},
         method="POST",
     )
