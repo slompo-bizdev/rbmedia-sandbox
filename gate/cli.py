@@ -52,11 +52,68 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--team", required=True, help="Linear team key, e.g. RBM")
     s.add_argument("--dry-run", action="store_true", help="print what it would do")
 
+    r = sub.add_parser(
+        "readiness", parents=[common],
+        help="launch readiness board; the catalogue gate feeds the `gate` rows",
+    )
+    r.add_argument("--format", choices=("terminal", "markdown"), default="terminal")
+
+    d = sub.add_parser(
+        "digest", parents=[common],
+        help="sync Linear, age the board against SLAs, post the brief to Slack",
+    )
+    d.add_argument("--team", required=True, help="Linear team key, e.g. RBM")
+    d.add_argument("--no-slack", action="store_true", help="print the message instead of posting")
+    d.add_argument("--no-escalate", action="store_true", help="report SLA breaches without raising them")
+    d.add_argument(
+        "--as-of",
+        help="evaluate SLA ages as if it were this date, e.g. 2026-10-20. The issues "
+             "are real and so is the escalation; only the clock is moved.",
+    )
+
     args = parser.parse_args(argv)
     today = _today(args.today)
 
     catalogue, rights = _load(args.source)
     findings = run_all(catalogue, rights, today)
+
+    if args.cmd == "digest":
+        from .linear import sync
+        from .readiness import load_checks, resolve
+        from .sla import check_slas
+        from .slack import compose, post
+
+        issues = sync(findings, team_key=args.team)
+        urls = {i["key"]: i["url"] for i in issues}
+        created = sum(1 for i in issues if i["action"] == "created")
+        print(f"linear: {created} created, {len(issues) - created} updated")
+
+        as_of = None
+        if args.as_of:
+            from datetime import datetime, time, timezone
+
+            as_of = datetime.combine(date.fromisoformat(args.as_of), time(12), timezone.utc)
+            print(f"sla:    ageing the board as of {args.as_of}")
+        breaches = check_slas(args.team, now=as_of, escalate=not args.no_escalate)
+        raised = sum(1 for b in breaches if b.escalated_now)
+        print(f"sla:    {len(breaches)} past SLA, {raised} raised to urgent this run")
+
+        checks = resolve(load_checks(), findings)
+        text = compose(findings, checks, breaches, urls, run_date=str(today))
+        if args.no_slack:
+            print("\n--- slack message ---\n" + text)
+        else:
+            post(text)
+            print("slack:  posted")
+        return 0 if all(not c.holds_launch for c in checks) else 1
+
+    if args.cmd == "readiness":
+        from .readiness import load_checks, resolve, to_markdown, to_terminal, verdict
+
+        checks = resolve(load_checks(), findings)
+        print(to_markdown(checks) if args.format == "markdown" else to_terminal(checks))
+        # No-go is a failure exit, same as a blocking finding: this is a gate.
+        return 0 if verdict(checks)["go"] else 1
 
     if args.cmd == "check":
         if args.format == "json":

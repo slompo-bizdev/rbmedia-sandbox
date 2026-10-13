@@ -1,0 +1,19 @@
+id,area,check,owner,blocking,status,evidence
+INF-1,infrastructure,CDN in front of the storefront with cache rules for product and collection pages,platform-vendor,yes,pass,"Fastly service 7XQ2, staging verified 2026-10-09"
+INF-2,infrastructure,DNS cutover rehearsed with TTL lowered 48h ahead,platform-vendor,yes,unknown,
+INF-3,infrastructure,Rollback path documented and timed,platform-vendor,yes,fail,"No rollback doc; last attempt took 40min with manual DNS edit"
+SEC-1,security,Admin API tokens scoped read-only except the two write paths,client-security,yes,pass,"Scope audit 2026-10-10, 3 apps reviewed"
+SEC-2,security,PCI scope confirmed — no card data touches our systems,client-security,yes,pass,"Shopify Payments only; attestation on file"
+SEC-3,security,Territory enforcement cannot be bypassed by direct cart URL,platform-vendor,yes,fail,"Cart accepts a variant the geo-gate hides in the UI"
+LOAD-1,load,Peak traffic target agreed in writing with the business,client-product,yes,unknown,
+LOAD-2,load,Load test at 3x expected peak against a production-shaped dataset,platform-vendor,yes,fail,"Not run. Blocked on LOAD-1 and on a seeded catalogue"
+LOAD-3,load,Checkout completion under load measured end to end,platform-vendor,yes,unknown,
+OBS-1,observability,Error budget and alert thresholds defined for checkout,platform-vendor,yes,fail,"Dashboards exist; nobody owns the pager"
+OBS-2,observability,Silent-failure paths instrumented — discarded orders raise an alert,platform-vendor,yes,pass,"Gate R5 covers unfulfillable listings pre-launch"
+OBS-3,observability,Entitlement delivery failures visible within 5 minutes,fulfilment-vendor,yes,unknown,
+PERF-1,checkout,Checkout p95 under 2s on the three highest-volume territories,platform-vendor,yes,unknown,
+PERF-2,checkout,Third-party scripts on the checkout path inventoried and budgeted,platform-vendor,no,fail,"7 tags, none budgeted"
+CAT-1,catalogue,Catalogue integrity gate green — no blocking findings,rights-ops,yes,gate,"Evaluated live by gate.cli"
+CAT-2,catalogue,Rights table has a named owner and an update cadence,client-product,yes,unknown,
+FUL-1,fulfilment,Every buyable title has a deliverable asset,fulfilment-vendor,yes,gate,"Covered by rule R5"
+FUL-2,fulfilment,Refund and re-download path tested for a digital good,fulfilment-vendor,no,unknown,

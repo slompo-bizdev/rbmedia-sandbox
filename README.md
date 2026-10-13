@@ -56,29 +56,64 @@ running the gate every morning updates the board instead of flooding it.
 
 That is vendor accountability as code rather than as a status meeting.
 
+## Launch readiness, and why it is a table
+
+`data/readiness.csv` is the job description's own list — infrastructure, security, load,
+observability, checkout performance — as rows with an owner, evidence, and a verdict.
+A readiness *document* gets written once and rots; a readiness *table* can be evaluated,
+can block, and can name who is holding the launch.
+
+Two statuses carry a decision:
+
+- **`unknown`** counts as not-ready. An unanswered blocking check is the most common way
+  a launch date slips, and scoring it as a pass is how a team lies to itself.
+- **`gate`** is not a human judgement. Those rows are resolved at run time from the
+  catalogue findings, which is how the two halves connect: catalogue integrity is *one
+  input to* launch readiness, not a separate report nobody reconciles.
+
+## Ageing, escalation, and the morning brief
+
+`gate/sla.py` puts a clock on every open issue, with the SLA taken from the owner — two
+days for a live rights breach, five for a platform vendor, seven for a question the
+client owes us. Past its SLA, an issue goes to Urgent, picks up an `sla-breach` label,
+and gets one comment. **There is no state file: the Linear issue is the state.** Its
+`createdAt` is when we first saw the problem and the label is what stops us escalating
+the same thing twice.
+
+`gate/slack.py` posts the brief into the ops channel: verdict, who is holding it, the
+three worst findings, anything past SLA. Short on purpose — detail is one click away in
+Linear. "Real-time communication during launches" means the people who can act find out
+where they already work.
+
 ## Run it
 
 Offline, no credentials, no network:
 
 ```bash
-python -m pytest -q                  # 17 tests
-python -m gate.cli check             # reads data/catalogue.csv
-python -m gate.cli check --today 2026-11-04   # watch R2 and R6 change
-python -m gate.cli check --format markdown > report.md
+python3 -m pytest -q                            # 27 tests
+python3 -m gate.cli check                       # reads data/catalogue.csv
+python3 -m gate.cli check --today 2026-11-04    # watch R2 and R6 change
+python3 -m gate.cli readiness                   # the go/no-go board
+python3 -m gate.cli check --format markdown > report.md
 ```
 
-Against the live store and board:
+Against the live board and channel:
 
 ```bash
 cp .env.example .env     # then fill it in
 set -a; source .env; set +a
 
-python -m gate.cli check --source shopify
-python -m gate.cli sync  --source shopify --team RBM
+python3 -m gate.cli sync   --team RBM             # one owned issue per finding
+python3 -m gate.cli digest --team RBM             # sync + age + post the brief
+python3 -m gate.cli digest --team RBM --no-slack  # print the brief instead
+python3 -m gate.cli digest --team RBM --as-of 2026-10-20   # see the escalation path
 ```
 
-`check` exits **1** when anything blocking is open, so it belongs in CI as a gate, not
-in an inbox as a report.
+`--as-of` moves only the clock: the issues and the escalation are real, which is the
+only way to see the SLA path on a board whose tickets were opened this morning.
+
+Every command exits **1** when something blocking is open, so these belong in CI as
+gates, not in an inbox as reports.
 
 ## Shopify shape it expects
 
