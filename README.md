@@ -146,6 +146,26 @@ only way to see the SLA path on a board whose tickets were opened this morning.
 Every command exits **1** when something blocking is open, so these belong in CI as
 gates, not in an inbox as reports.
 
+## Seeding the store
+
+```bash
+export SHOPIFY_SHOP=slompoboutique.myshopify.com
+export SHOPIFY_TOKEN=shpat_...          # minted on demand, not stored
+
+python3 -m gate.seed --dry-run          # see what it would do
+python3 -m gate.seed                     # create/update the ten titles
+python3 -m gate.seed --unpublish-others  # hide anything unrelated (reversible)
+python3 -m gate.seed --republish-others  # put it back
+
+python3 -m gate.cli check --source shopify
+```
+
+Seeding is idempotent by handle, and **it never deletes**. Everything it creates
+carries the `audiobook` tag, which is also how the adapter finds it — so a different
+catalogue can live in the same store and neither pollutes the other's report.
+`--unpublish-others` changes product status, nothing more, and the opposite flag
+restores it.
+
 ## Shopify shape it expects
 
 Metafields in the `custom` namespace: `isbn`, `imprint`, `territories`

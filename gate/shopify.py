@@ -23,9 +23,14 @@ from .rules import Product
 
 API_VERSION = "2026-07"
 
+# The gate reads only what carries the audiobook tag. An unrelated catalogue can
+# then live in the same store without either one polluting the other's report —
+# which is also why seeding never had to delete anything.
+CATALOGUE_TAG = "audiobook"
+
 _QUERY = """
-query Catalogue($cursor: String) {
-  products(first: 100, after: $cursor) {
+query Catalogue($cursor: String, $query: String) {
+  products(first: 100, after: $cursor, query: $query) {
     pageInfo { hasNextPage endCursor }
     nodes {
       id
@@ -113,12 +118,19 @@ def fetch_catalogue(shop: str | None = None, token: str | None = None) -> list[P
     products: list[Product] = []
     cursor = None
     while True:
-        data = _post(shop, token, _QUERY, {"cursor": cursor})
+        data = _post(shop, token, _QUERY,
+                     {"cursor": cursor, "query": f"tag:{CATALOGUE_TAG}"})
         page = data["products"]
         products.extend(_as_product(n) for n in page["nodes"])
         if not page["pageInfo"]["hasNextPage"]:
             break
         cursor = page["pageInfo"]["endCursor"]
+
+    if not products:
+        raise ShopifyError(
+            f"No products tagged `{CATALOGUE_TAG}` in {shop}. Run "
+            f"`python3 -m gate.seed` first, or check the token's scopes."
+        )
 
     missing = [p.handle for p in products if not p.isbn]
     if missing:
