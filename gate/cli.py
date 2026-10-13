@@ -71,6 +71,12 @@ def main(argv: list[str] | None = None) -> int:
              "are real and so is the escalation; only the clock is moved.",
     )
 
+    g = sub.add_parser(
+        "page", parents=[common],
+        help="render one self-contained HTML page from this run",
+    )
+    g.add_argument("--out", default="run.html", help="output path (default run.html)")
+
     i = sub.add_parser(
         "intake", parents=[common],
         help="triage a stakeholder demand against the source and the SOW",
@@ -85,6 +91,20 @@ def main(argv: list[str] | None = None) -> int:
 
     catalogue, rights = _load(args.source)
     findings = run_all(catalogue, rights, today)
+
+    if args.cmd == "page":
+        from .intake import Demand, triage
+        from .page import render
+        from .readiness import load_checks, resolve
+        from pathlib import Path as _P
+
+        checks = resolve(load_checks(), findings)
+        triages = []
+        for d in sorted(_P("demands").glob("*.json")) if _P("demands").is_dir() else []:
+            triages.append(triage(Demand.from_json(d), rights, findings, today))
+        _P(args.out).write_text(render(findings, checks, triages, today), encoding="utf-8")
+        print(f"wrote {args.out}")
+        return 0
 
     if args.cmd == "intake":
         from .intake import (
