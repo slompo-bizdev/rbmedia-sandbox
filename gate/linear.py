@@ -121,6 +121,27 @@ def _ensure_labels(token: str, team_id: str, names: set[str]) -> dict[str, str]:
     return existing
 
 
+# Short human phrase per rule, so the board reads as a list of problems rather
+# than a list of rule codes. The key still travels in the title (at the end,
+# where it does not fight the headline) and is what makes the sync idempotent.
+_HEADLINE = {
+    "R1_TERRITORY_WITHOUT_RIGHTS": "on sale without rights",
+    "R2_LIVE_BEFORE_WINDOW": "live before licence window",
+    "R3_PRICE_BELOW_FLOOR": "priced below contractual floor",
+    "R4_DUPLICATE_ISBN": "duplicate ISBN across listings",
+    "R5_MISSING_AUDIO_ASSET": "no deliverable file",
+    "R6_RIGHTS_NOT_LISTED": "licensed but not on sale",
+}
+
+
+def _title(f: Finding) -> str:
+    what = _HEADLINE.get(f.rule, f.rule)
+    head = f"{f.title or f.isbn} — {what}"
+    if f.rule == "R1_TERRITORY_WITHOUT_RIGHTS" and f.evidence.get("territory"):
+        head = f"{f.title or f.isbn} — on sale in {f.evidence['territory']} without rights"
+    return f"{head} [{f.key}]"[:250]
+
+
 def _body(f: Finding) -> str:
     money = (
         f"**Revenue at risk:** ${f.revenue_at_risk_usd:,.2f} / month\n"
@@ -154,7 +175,7 @@ def sync(findings: list[Finding], team_key: str, token: str | None = None) -> li
 
     results = []
     for f in findings:
-        title = f"[{f.key}] {f.title or f.isbn}"
+        title = _title(f)
         found = _post(token, _FIND, {"teamId": team_id, "needle": f.key})["issues"]["nodes"]
         label_ids = [
             labels[n] for n in (f.rule, f"owner:{f.owner}") if n in labels
@@ -164,7 +185,14 @@ def sync(findings: list[Finding], team_key: str, token: str | None = None) -> li
             data = _post(
                 token,
                 _UPDATE,
-                {"id": issue["id"], "input": {"description": _body(f), "labelIds": label_ids}},
+                {
+                    "id": issue["id"],
+                    "input": {
+                        "title": _title(f),
+                        "description": _body(f),
+                        "labelIds": label_ids,
+                    },
+                },
             )["issueUpdate"]
             results.append(
                 {"key": f.key, "action": "updated", "identifier": issue["identifier"],
@@ -178,7 +206,7 @@ def sync(findings: list[Finding], team_key: str, token: str | None = None) -> li
             {
                 "input": {
                     "teamId": team_id,
-                    "title": title[:250],
+                    "title": title,
                     "description": _body(f),
                     "priority": PRIORITY.get(f.severity, DEFAULT_PRIORITY),
                     "labelIds": label_ids,
