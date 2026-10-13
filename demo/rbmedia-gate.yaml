@@ -1,6 +1,6 @@
 title: "Catalogue integrity gate — how the job description gets answered"
 url: "file:///Users/victorslompo/projects/rbmedia-sandbox/demo/store.html"
-profile: rbm
+profile: none
 # Voice: run with --config config-liam.yaml (Kokoro am_liam)
 #
 # Seven scenes, about two and a half minutes. A thirteen-scene cut existed and was
@@ -8,19 +8,25 @@ profile: rbm
 # something people open without asking. What came out is in the repository, which
 # is where detail belongs.
 #
-# Needs a profile with Linear. The storefront appears as a still image, not a live
+# No live sites at all: every scene is a local file. The storefront is password
+# protected, and the Linear workspace is owned by an account the recorder's
+# Playwright profile cannot sign in to (Google refuses automated browsers). Both
+# appear as still images behind local wrappers, which also means the recording
+# needs no session and no network.
+#
+# (was) Needs a profile with Linear. The storefront appears as a still image, not a live
 # page: a development store cannot drop its password, and the recorder's login
 # guard treats any page with a "Log in" link and no "Logout" as a wall — which
 # every Shopify storefront is. Same wrapper trick as the Slack brief.
 scenes:
-  - say: "This is a real Shopify store — ten audiobook titles across three invented imprints, seeded through the Admin API this morning. Each one carries its I S B N, its imprint, the territories it is allowed to sell in, and the audio file delivered after checkout. The catalogue is synthetic and the imprints are made up, because I did not want to put a real brand on my sandbox. The store is not."
+  - say: "This is a real Shopify store — nine live audiobook listings across three invented imprints, seeded through the Admin API this morning. Each one carries its I S B N, its imprint, the territories it is allowed to sell in, and the audio file delivered after checkout. The catalogue is synthetic and the imprints are made up, because I did not want to put a real brand on my sandbox. The store is not."
     caption: "A real Shopify store, seeded through the Admin API"
     actions:
       - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/demo/store.html"
       - wait: 5500
 
-  - say: "Selling audiobooks direct is not a storefront problem. Rights are licensed per territory and per window, so a title that is buyable where the licence does not reach is not a user-experience bug — it is a breach with the rights holder. So the interesting object is the gate in front of the shop, and today it says no-go. Four of eighteen readiness checks met, and four blocking problems in the catalogue worth about twenty-four thousand dollars a month."
-    caption: "NO-GO · 4 of 18 ready · $23,815/mo at risk"
+  - say: "Selling audiobooks direct is not a storefront problem. Rights are licensed per territory and per window, so a title that is buyable where the licence does not reach is not a user-experience bug — it is a breach with the rights holder. So the interesting object is the gate in front of the shop, and today it says no-go. Five of eighteen readiness checks met, and four blocking problems in the catalogue worth about twenty-four thousand dollars a month."
+    caption: "NO-GO · 5 of 18 ready · $23,815/mo at risk"
     actions:
       - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/run.html"
       - wait: 4000
@@ -60,7 +66,7 @@ scenes:
   - say: "Every finding becomes an issue somebody owns, labelled by rule and by the vendor the contract puts it on. The sync is idempotent, so running it each morning updates the board instead of flooding it, and there is no state file — the issue is the state. Past its owner's service level it goes to urgent, and the brief says so in the channel where the team already works. That is the whole idea: find what fails without anyone noticing, give it an owner and a clock, and put it where people already are."
     caption: "One owned ticket per problem · aged against SLA"
     actions:
-      - goto: "https://linear.app/rbmedia-sandbox/team/RBM/all"
+      - goto: "file:///Users/victorslompo/projects/rbmedia-sandbox/demo/linear.html"
       - wait: 5000
       - scroll: { by: 260 }
       - wait: 3500
