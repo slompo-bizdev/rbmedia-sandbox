@@ -85,6 +85,37 @@ three worst findings, anything past SLA. Short on purpose — detail is one clic
 Linear. "Real-time communication during launches" means the people who can act find out
 where they already work.
 
+## Stakeholder intake — where the loop closes
+
+A demand arrives by email. `gate/intake.py` decides what it is, in this order,
+stopping at the first question that resolves:
+
+1. **Already tracked?** Link it. Opening a second ticket for a known problem is how a
+   board loses the room's trust.
+2. **Does the claim survive the source?** The email says the GB licence expired; the
+   rights table is what settles it. If the source disagrees, the reply carries the
+   evidence rather than an opinion.
+3. **Which SOW line?** None, or a line with no approved hours, means this is a **change
+   request, not an outstanding task**. Saying that in writing on the day it arrives is
+   the difference between a project that lands and one that quietly overruns.
+4. **What is the acceptance criterion?** Prose becomes something a human can sign off,
+   which is also the UAT seed.
+
+The division of labour is deliberate. **A human, with a model's help, reads the prose
+and fills in a small structured demand** (`demands/*.json`) — that is judgement, and
+judgement does not belong inside a deterministic rule. This module then decides, and
+*this* is the part that is tested.
+
+```bash
+python3 -m gate.cli intake --demand demands/D-003.json              # not reproducible
+python3 -m gate.cli intake --demand demands/D-002.json              # change request
+python3 -m gate.cli intake --demand demands/D-001.json --team RBM   # already tracked
+python3 -m gate.cli intake --demand demands/D-002.json --team RBM --open --slack
+```
+
+`intake` exits **1** on a change request, so an automated pipeline cannot quietly
+absorb new scope.
+
 ## Run it
 
 Offline, no credentials, no network:

@@ -1,0 +1,9 @@
+{
+  "id": "D-2026-10-13-01",
+  "sender": "don.young.freedom@gmail.com",
+  "subject": "URGENT - Saltmarsh is still selling in the UK",
+  "ask": "Take Saltmarsh off sale in the UK today — I think the licence ran out in June.",
+  "sow_tag": "catalogue-integrity",
+  "claim": { "type": "rights_expired", "isbn": "9780000000102", "territory": "GB" },
+  "needed_by": "2026-10-13"
+}

@@ -71,11 +71,68 @@ def main(argv: list[str] | None = None) -> int:
              "are real and so is the escalation; only the clock is moved.",
     )
 
+    i = sub.add_parser(
+        "intake", parents=[common],
+        help="triage a stakeholder demand against the source and the SOW",
+    )
+    i.add_argument("--demand", required=True, help="path to a demand JSON, e.g. demands/D-001.json")
+    i.add_argument("--team", help="Linear team key; needed to link or open issues")
+    i.add_argument("--open", action="store_true", help="open the Linear issue")
+    i.add_argument("--slack", action="store_true", help="post the verdict to the ops channel")
+
     args = parser.parse_args(argv)
     today = _today(args.today)
 
     catalogue, rights = _load(args.source)
     findings = run_all(catalogue, rights, today)
+
+    if args.cmd == "intake":
+        from .intake import (
+            CHANGE_REQUEST, TRACKED, Demand, issue_body, issue_title,
+            to_terminal, triage,
+        )
+
+        demand = Demand.from_json(args.demand)
+        keys = {}
+        if args.team:
+            from .linear import open_keys
+
+            keys = open_keys(args.team)
+        t = triage(demand, rights, findings, today, open_issue_keys=keys)
+        print(to_terminal(t))
+
+        if args.open and t.opens_a_ticket:
+            if not args.team:
+                parser.error("--open needs --team")
+            from .linear import _ensure_labels, _post, _resolve_team, _CREATE
+
+            token_team = _resolve_team(__import__("os").environ["LINEAR_API_KEY"], args.team)
+            names = {f"intake:{t.verdict}"} | ({f"owner:{t.sow.owner}"} if t.sow else set())
+            labels = _ensure_labels(__import__("os").environ["LINEAR_API_KEY"], token_team, names)
+            data = _post(
+                __import__("os").environ["LINEAR_API_KEY"],
+                _CREATE,
+                {"input": {
+                    "teamId": token_team,
+                    "title": issue_title(t),
+                    "description": issue_body(t),
+                    "priority": 1 if t.verdict == CHANGE_REQUEST else 2,
+                    "labelIds": list(labels.values()),
+                }},
+            )["issueCreate"]
+            print(f"  linear: {data['issue']['identifier']}  {data['issue']['url']}")
+
+        if args.slack:
+            from .slack import post
+
+            post(
+                f"*Intake {demand.id} — {t.verdict.replace('_', ' ').upper()}*\n"
+                f"from {demand.sender} · _{demand.subject}_\n"
+                f"> {demand.ask}\n\n*Verdict:* {t.reason}"
+                + ("\n\n*Acceptance*\n" + "\n".join(f"{n}. {a}" for n, a in enumerate(t.acceptance, 1)) if t.acceptance else "")
+            )
+            print("  slack: posted")
+        return 0 if t.verdict != CHANGE_REQUEST else 1
 
     if args.cmd == "digest":
         from .linear import sync

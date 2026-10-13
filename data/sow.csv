@@ -1,0 +1,6 @@
+line,tag,scope,hours_approved,hours_used,owner,notes
+SOW-1,catalogue-integrity,"Catalogue and rights reconciliation across imprints: rules, report and ticketing",80,52,rights-ops,"Covers R1-R6. New rule classes are in scope; a new source system is not."
+SOW-2,launch-readiness,Launch readiness board and go-live coordination for the storefront,60,18,platform-vendor,"Coordination and evidence gathering. Executing the load test is the platform vendor's own line."
+SOW-3,entitlement,Entitlement and delivery for digital goods after checkout,0,0,fulfilment-vendor,"Not contracted. Scoping only; any build here needs a change order."
+SOW-4,territory-enforcement,Territory enforcement at cart and checkout,40,6,platform-vendor,"Covers the geo-gate and the cart bypass. Does not cover tax or currency."
+SOW-5,reporting,Weekly delivery report and the ops channel brief,20,11,rights-ops,"Includes the Slack digest and the markdown report."

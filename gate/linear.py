@@ -218,3 +218,42 @@ def sync(findings: list[Finding], team_key: str, token: str | None = None) -> li
              "identifier": data["issue"]["identifier"], "url": data["issue"]["url"]}
         )
     return results
+
+
+_OPEN_KEYS = """
+query OpenKeys($teamId: ID!, $cursor: String) {
+  issues(
+    filter: { team: { id: { eq: $teamId } }, state: { type: { nin: ["completed", "canceled"] } } }
+    first: 100
+    after: $cursor
+  ) {
+    pageInfo { hasNextPage endCursor }
+    nodes { identifier title }
+  }
+}
+"""
+
+
+def open_keys(team_key: str, token: str | None = None) -> dict[str, str]:
+    """{finding key -> issue identifier} for everything still open on the board.
+
+    Intake uses this to link rather than duplicate: a stakeholder reporting a
+    problem the gate already found should land on the existing ticket.
+    """
+    token = token or os.environ.get("LINEAR_API_KEY", "")
+    if not token:
+        raise LinearError("Set LINEAR_API_KEY.")
+    team_id = _resolve_team(token, team_key)
+    out: dict[str, str] = {}
+    cursor = None
+    while True:
+        page = _post(token, _OPEN_KEYS, {"teamId": team_id, "cursor": cursor})["issues"]
+        for n in page["nodes"]:
+            if "[" in n["title"] and "]" in n["title"]:
+                key = n["title"].rsplit("[", 1)[1].rstrip("]").strip()
+                if key.startswith("R"):
+                    out[key] = n["identifier"]
+        if not page["pageInfo"]["hasNextPage"]:
+            break
+        cursor = page["pageInfo"]["endCursor"]
+    return out

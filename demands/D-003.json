@@ -1,0 +1,9 @@
+{
+  "id": "D-2026-10-13-03",
+  "sender": "don.young.freedom@gmail.com",
+  "subject": "Hollow Season is priced wrong",
+  "ask": "Hollow Season is being sold under our floor price in the US. Please fix it today.",
+  "sow_tag": "catalogue-integrity",
+  "claim": { "type": "price_wrong", "isbn": "9780000000108", "territory": "US" },
+  "needed_by": "2026-10-14"
+}
