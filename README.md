@@ -166,6 +166,18 @@ catalogue can live in the same store and neither pollutes the other's report.
 `--unpublish-others` changes product status, nothing more, and the opposite flag
 restores it.
 
+## Live and offline agree
+
+Running against the seeded store and running against `data/catalogue.csv` produce the
+**same seven findings, the same four blockers, the same $23,815.34 a month**. That is
+the point of the split: the fixture is a faithful copy of the store, so the offline
+mode exists to avoid depending on a token in a room — not to flatter the result.
+
+```
+python3 -m gate.cli check                    # fixture
+python3 -m gate.cli check --source shopify   # the store, through the Admin API
+```
+
 ## Two things Shopify taught the design
 
 Both found while seeding the real store, and both left in because they are the
