@@ -199,6 +199,41 @@ pricing, unrealised revenue for an unlisted licence.</p>
 <code>gate</code> in the source table are not human judgements — they resolve from the
 catalogue findings on every run, which is how the two halves stay reconciled.</p>
 
+<h2 id="platform">The data platform, in five moves</h2>
+<div class="card">
+  <h3>Requirements are a named table with a named owner, not a document</h3>
+  <p class="d">The rights table is the requirement. Before any build, one question
+  decides whether the rest is possible: <strong>who owns it, and how often is it
+  updated?</strong> Here it is a CSV standing in for a system. On a real engagement, a
+  gate is only ever as good as that table — so the first deliverable is naming its
+  owner, not writing a spec.</p>
+</div>
+<div class="card">
+  <h3>The MVP is the thinnest slice that can be wrong in public</h3>
+  <p class="d">One imprint, one territory, the six rules, running every morning. Not
+  the whole catalogue. A slice that runs daily gets corrected daily; a complete system
+  that lands in month four gets argued with instead of used.</p>
+</div>
+<div class="card">
+  <h3>UAT is generated, not written afterwards</h3>
+  <p class="d">Every blocking rule already carries its acceptance criteria — see the
+  intake cards below. A business owner signs off against those, not against a demo.
+  Writing the test after the build is how UAT becomes a formality.</p>
+</div>
+<div class="card">
+  <h3>Adoption is measured on the board, not on the ship date</h3>
+  <p class="d">The question is not whether the tool was delivered. It is whether
+  findings get closed: how many a week, and time-to-close by owner. If nothing closes,
+  the project failed even though it shipped — and the Linear board answers that
+  without anyone writing a status report.</p>
+</div>
+<div class="card">
+  <h3>Handoff is the rules plus one runbook</h3>
+  <p class="d">The rules are the documentation: they are readable, tested, and each one
+  states the failure it catches. What has to be written is short — how to add a rule,
+  how to change an SLA, and who to call when the rights table is wrong.</p>
+</div>
+
 <h2 id="notobs">What this is not</h2>
 <div class="card">
   <h3>This is not observability. There is no telemetry here.</h3>
