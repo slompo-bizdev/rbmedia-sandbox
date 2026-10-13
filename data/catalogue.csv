@@ -1,0 +1,11 @@
+handle,title,isbn,imprint,territories,price_usd,published,audio_asset
+the-long-quiet,The Long Quiet,9780000000101,Northwind Audio,US|CA|JP,24.99,true,asset_tlq_01
+saltmarsh,Saltmarsh,9780000000102,Saltgrass Audio,US|GB,21.99,true,asset_sm_01
+winter-ledger,Winter Ledger,9780000000103,Harborlight Audio,US|CA,27.99,true,asset_wl_01
+the-cartographers-wife,The Cartographer's Wife,9780000000104,Northwind Audio,US,14.99,true,asset_tcw_01
+nine-lamps,Nine Lamps,9780000000105,Northwind Audio,US,25.99,true,asset_nl_01
+nine-lamps-saltgrass-edition,Nine Lamps,9780000000105,Saltgrass Audio,US,25.99,true,asset_nl_02
+driftwood-hour,Driftwood Hour,9780000000106,Harborlight Audio,US,22.99,true,
+hollow-season,Hollow Season,9780000000108,Northwind Audio,US,26.99,true,asset_hs_01
+paper-lanterns,Paper Lanterns,9780000000109,Harborlight Audio,US,22.99,true,asset_pl_01
+the-second-tide,The Second Tide,9780000000110,Saltgrass Audio,US,21.99,false,asset_tst_01
