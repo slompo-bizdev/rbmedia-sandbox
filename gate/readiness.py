@@ -27,6 +27,7 @@ from .rules import BLOCKING, Finding
 
 ROOT = Path(__file__).resolve().parent.parent
 READINESS_CSV = ROOT / "data" / "readiness.csv"
+LATENCY_JSON = ROOT / "data" / "latency.json"
 
 PASS = "pass"
 FAIL = "fail"
@@ -79,17 +80,45 @@ def load_checks(path: Path | str = READINESS_CSV) -> list[Check]:
     return out
 
 
+def _latency() -> dict | None:
+    """The measured baseline, if one has been taken. Absent is not a pass."""
+    import json
+
+    try:
+        return json.loads(LATENCY_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
 def resolve(checks: list[Check], findings: list[Finding]) -> list[Check]:
-    """Turn `gate` rows into pass/fail using the live catalogue findings."""
+    """Turn `gate` rows into pass/fail from measurement, never from a typed status."""
     blocking = [f for f in findings if f.severity == BLOCKING]
     r5 = [f for f in blocking if f.rule == "R5_MISSING_AUDIO_ASSET"]
     others = [f for f in blocking if f.rule != "R5_MISSING_AUDIO_ASSET"]
+
+    lat = _latency()
 
     out = []
     for c in checks:
         if c.status != GATE:
             out.append(c)
             continue
+
+        if c.id == "PERF-1":
+            if lat is None:
+                out.append(Check(**{**c.__dict__, "status": UNKNOWN,
+                                    "evidence": "No baseline taken yet; run `python3 -m gate.latency`."}))
+            else:
+                ok = lat.get("meets_target")
+                out.append(Check(**{**c.__dict__,
+                                    "status": PASS if ok else FAIL,
+                                    "evidence": (
+                                        f"Measured {lat.get('measured_at','')}: worst p95 "
+                                        f"{lat.get('worst_p95_ms')} ms against a "
+                                        f"{lat.get('target_p95_ms')} ms target, at rest. "
+                                        f"{lat.get('method','')}")}))
+            continue
+
         if c.id == "FUL-1":
             relevant = r5
         else:

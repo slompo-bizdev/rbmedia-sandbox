@@ -136,3 +136,34 @@ def test_bad_status_is_rejected_loudly(tmp_path):
     )
     with pytest.raises(ValueError, match="expected pass, fail, unknown or gate"):
         load_checks(p)
+
+
+# ------------------------------------------------------- measured, not typed
+
+def test_perf_row_is_unanswered_until_a_baseline_exists(monkeypatch):
+    # Absent is not a pass. A performance row with no measurement behind it is
+    # exactly the kind of unanswered check that slips a launch.
+    from gate import readiness as R
+
+    monkeypatch.setattr(R, "_latency", lambda: None)
+    row = resolve([check(id="PERF-1", area="checkout", status=GATE)], [])[0]
+    assert row.status == UNKNOWN
+    assert "gate.latency" in row.evidence
+
+
+def test_perf_row_passes_or_fails_from_the_measurement(monkeypatch):
+    from gate import readiness as R
+
+    monkeypatch.setattr(R, "_latency", lambda: {
+        "meets_target": True, "worst_p95_ms": 412, "target_p95_ms": 800,
+        "measured_at": "2026-10-13T09:00:00", "method": "5 GETs per URL",
+    })
+    row = resolve([check(id="PERF-1", area="checkout", status=GATE)], [])[0]
+    assert row.status == PASS
+    assert "412 ms" in row.evidence
+
+    monkeypatch.setattr(R, "_latency", lambda: {
+        "meets_target": False, "worst_p95_ms": 1840, "target_p95_ms": 800,
+        "measured_at": "2026-10-13T09:00:00", "method": "5 GETs per URL",
+    })
+    assert resolve([check(id="PERF-1", area="checkout", status=GATE)], [])[0].status == FAIL

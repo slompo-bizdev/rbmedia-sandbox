@@ -166,6 +166,29 @@ catalogue can live in the same store and neither pollutes the other's report.
 `--unpublish-others` changes product status, nothing more, and the opposite flag
 restores it.
 
+## Measurement, and the thing it is not
+
+```bash
+python3 -m gate.latency        # a baseline, 25 polite requests
+```
+
+This measures time to first byte on the storefront and writes `data/latency.json`,
+which the readiness board reads as the evidence for `PERF-1`. **No human types a number
+into that table.** With no measurement the row reads UNANSWERED, because absent is not
+a pass.
+
+It is **not** a load test and must not become one. Hammering a Shopify-hosted storefront
+measures their CDN rather than anything you control, and it is not yours to stress.
+Finding the breaking point belongs to the platform vendor, and
+[`docs/load-test-spec.md`](docs/load-test-spec.md) is what you hand them: the peak
+target and who owes it, five scenarios, what is out of scope and why, and the five
+pieces of evidence required before the row can be closed — because a green summary from
+a tool is unfalsifiable, and an unfalsifiable pass is worth less than an honest failure.
+
+Scenario **S5** is the one usually left out: territory enforcement *under load*. Rights
+failures are breaches rather than bad experiences, and race conditions do not appear in
+a quiet staging environment.
+
 ## Live and offline agree
 
 Running against the seeded store and running against `data/catalogue.csv` produce the
