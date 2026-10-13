@@ -28,7 +28,7 @@ font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1080px;margin:0 auto;padding:40px 28px 80px}
 h1{font-size:26px;font-weight:600;color:var(--ink);margin:0 0 4px;letter-spacing:-.01em}
 .sub{font-family:var(--mono);font-size:12.5px;color:var(--mute);margin:0 0 28px}
-h2{font-size:13px;font-weight:600;color:var(--ink);text-transform:uppercase;
+h2{scroll-margin-top:24px;font-size:13px;font-weight:600;color:var(--ink);text-transform:uppercase;
 letter-spacing:.1em;margin:40px 0 14px;font-family:var(--mono)}
 .verdict{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:600;
 padding:6px 12px;border-radius:4px;letter-spacing:.06em}
@@ -187,19 +187,19 @@ def render(
 </div>
 {f'<p class="note">Holding the launch: {_e(who)}</p>' if who else ''}
 
-<h2>Catalogue findings</h2>
+<h2 id="findings">Catalogue findings</h2>
 {_findings_table(findings)}
 <p class="note">Ranked blocking first, then by money. Revenue at risk is arithmetic over
 estimated monthly units — exposure for the compliance rules, margin given away for
 pricing, unrealised revenue for an unlisted licence.</p>
 
-<h2>Launch readiness</h2>
+<h2 id="readiness">Launch readiness</h2>
 {_readiness_table(checks)}
 <p class="note">An unanswered blocking check holds the launch. Rows marked
 <code>gate</code> in the source table are not human judgements — they resolve from the
 catalogue findings on every run, which is how the two halves stay reconciled.</p>
 
-<h2>What this is not</h2>
+<h2 id="notobs">What this is not</h2>
 <div class="card">
   <h3>This is not observability. There is no telemetry here.</h3>
   <p class="d">Observability is about a system in flight: metrics, logs and traces;
@@ -234,7 +234,7 @@ catalogue findings on every run, which is how the two halves stay reconciled.</p
   times, and most projects only ever ask it once.</p>
 </div>
 
-<h2>Stakeholder intake</h2>
+<h2 id="intake">Stakeholder intake</h2>
 {_intake_cards(triages)}
 <p class="note">A human fills the structured demand from the prose email; the gate
 decides. A demand with no contracted SOW line is a change request on the day it
